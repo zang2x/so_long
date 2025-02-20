@@ -21,20 +21,23 @@ void player_move(struct t_list *vars, int x, int y)
     vars->playery += y;
     mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, vars->playerx, vars->playery);
 }
+
 int key_hook(int keycode, struct t_list *vars)
 {
-    if(keycode == 100)
-    {
-        printf("el keycode es %d", keycode);
+    if(keycode == 100) // D
         player_move(vars, 64, 0);
-        return(0);
-    }
+    if(keycode == 97) // A
+        player_move(vars, -64, 0);
+    if(keycode == 115) // S
+        player_move(vars, 0, 64);
+    if(keycode == 119) // W
+        player_move(vars, 0, -64);
     return(0);
 }
 
 int main()
 {
-    struct t_list vars;
+    s_list vars;
     init_vars(&vars);
     mlx_key_hook(vars.mlx_win, key_hook, &vars);
     mlx_loop(vars.mlx);
