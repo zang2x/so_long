@@ -3,7 +3,7 @@
 void    init_vars(struct t_list *vars)
 {
     vars->mlx = mlx_init();
-    vars->mlx_win = mlx_new_window(vars->mlx, 500, 500, "PERROWS");
+    vars->mlx_win = mlx_new_window(vars->mlx, 640, 640, "PERROWS VIDIOGAME");
     vars->height = 64;
     vars->width = 64;
     vars->playerimg = mlx_xpm_file_to_image(vars->mlx, "spriteplayer.xpm", &vars->width, &vars->height);
