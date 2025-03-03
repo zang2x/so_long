@@ -1,6 +1,14 @@
 #include "ft_printf.h"
 #include "libft.h"
 #include "mlx.h"
+#include <fcntl.h>
+#include <fcntl.h>
+
+#ifndef SIZE
+#define SIZE 64
+#endif
+
+
 
 typedef struct t_list
 {
