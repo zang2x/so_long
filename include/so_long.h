@@ -2,7 +2,6 @@
 #include "libft.h"
 #include "mlx.h"
 #include <fcntl.h>
-#include <fcntl.h>
 
 #ifndef SIZE
 #define SIZE 64
@@ -12,12 +11,16 @@
 
 typedef struct t_list
 {
+    char **splitmap;
     void *mlx;
     void *mlx_win;
     void *playerimg;
     void *floorimg;
+    void *wallimg;
     int height;
     int width;
     int playery;
     int playerx;
+    int validmap;
+    int coins;
 } s_list;
