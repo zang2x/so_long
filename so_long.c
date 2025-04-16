@@ -41,17 +41,25 @@ void    check_map(int playery, int playerx, s_list *vars)
         return;
     }
     if(vars->splitmap[playery][playerx] == 'C')
-        vars->coins+= 1;
-    if(vars->splitmap[playery][playerx] == '1')
+    {
+        vars->splitmap[playery][playerx] = 'c';   
+        vars->coins++;
+    }
+    if(vars->splitmap[playery][playerx] == '1' || vars->splitmap[playery][playerx] == '2' )
         return;
-    if(vars->splitmap[playery][playerx] == '2')
-        return;
-    vars->splitmap[playery][playerx] = '2';
+    if(vars->splitmap[playery][playerx] == 'P')
+    {
+        vars->playery = playery;
+        vars->playerx = playerx;
+    }
+    if(vars->splitmap[playery][playerx] != 'c' && vars->splitmap[playery][playerx] != 'P')
+        vars->splitmap[playery][playerx] = '2';
     check_map(playery + 1, playerx, vars);
     check_map(playery, playerx + 1, vars);
     check_map(playery, playerx - 1, vars);
     check_map(playery - 1, playerx, vars);
 }
+
 void    fill_map(s_list *vars)
 {
     int i = 0;
@@ -65,11 +73,16 @@ void    fill_map(s_list *vars)
                 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->floorimg, SIZE * j, SIZE * i);
             if(vars->splitmap[i][j] == '2')
                 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->wallimg, SIZE * j, SIZE * i);
+            if(vars->splitmap[i][j] == 'c')
+                mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->floorimg, SIZE * j, SIZE * i);
+            if(vars->splitmap[i][j] == 'P')
+                mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->wallimg, SIZE * j, SIZE * i);
             j++;
         }
         i++;
     }
-    mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, 64, 64);
+    mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, SIZE * vars->playerx, SIZE * vars->playery);
+    mlx_string_put(vars->mlx, vars->mlx_win, 100, 100, 87, ft_itoa(vars->coins));
 }
 
 void    init_vars(s_list *vars)
@@ -88,6 +101,7 @@ void    init_vars(s_list *vars)
     vars->wallimg = mlx_xpm_file_to_image(vars->mlx, "sprites/wall.xpm", &vars->width, &vars->height);
     vars->playery = 1;
     vars->playerx = 1;
+    vars->coins = 0;
 }
 
 void player_move(s_list *vars, int x, int y)
@@ -98,7 +112,28 @@ void player_move(s_list *vars, int x, int y)
         vars->playerx += x;
         vars->playery += y;
         mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, SIZE * vars->playerx, SIZE * vars->playery);
+        if(vars->splitmap[vars->playery][vars->playerx] == 'c')
+        {
+            vars->coins -= 1;
+            ft_printf("Faltan %d monedas wey\n", vars->coins);
+            vars->splitmap[vars->playery][vars->playerx] = '2';
+        }
+        if(vars->splitmap[vars->playery][vars->playerx] == 'E')
+        {
+            if(vars->coins > 0)
+            {
+                ft_printf("Aun te faltan %d monedas, no te vayas\n", vars->coins);
+            }
+            else
+            {
+                mlx_destroy_window(vars->mlx, vars->mlx_win);
+                ft_printf("Lo tenemos, brutal\n");
+                exit(0);
+            }
+        }    
     }
+    mlx_clear_window(vars->mlx, vars->mlx_win);
+    fill_map(vars);
 }
 
 int closewin(s_list *vars)
@@ -106,6 +141,7 @@ int closewin(s_list *vars)
     mlx_destroy_window(vars->mlx, vars->mlx_win);
     exit(0);
 }
+
 int key_hook(int keycode, s_list *vars)
 {
     if(keycode == 100) // D
@@ -125,10 +161,6 @@ int main()
     init_vars(&vars);
     check_map(vars.playery, vars.playerx, &vars);
     check_sizemap(&vars);
-    if(vars.validmap == 1)
-        printf("%s", "exitado");
-    else 
-        printf("%s", "no exitado");
     fill_map(&vars);
     mlx_key_hook(vars.mlx_win, key_hook, &vars);
     mlx_hook(vars.mlx_win, 17, 0, closewin, &vars);

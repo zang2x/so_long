@@ -10,9 +10,9 @@ RM = rm -f
 AR = ar rcs
 NAME = so_long
 
-all: lib mlx $(NAME)
+all: lib printf mlx $(NAME)
 
-bonus: lib mlx $(NAME)
+bonus: lib printf mlx $(NAME)
 
 lib:
 	make	-C	$(LIBFT)
@@ -20,10 +20,13 @@ lib:
 mlx:
 	make -C $(MINILIBX)
 
+printf:
+	make -C $(FTPRINTF)
+
 $(NAME): $(OBJS)
 	make	-C	$(LIBFT)
 	make -C $(MINILIBX)
-	$(CC)	$(OBJS)	-L	$(LIBFT)	-lft -L	$(MINILIBX) -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -o	$(NAME)
+	$(CC) $(OBJS) -L $(LIBFT) -lft -L $(FTPRINTF) -lftprintf -L $(MINILIBX) -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -o $(NAME)
 
 $(OBJDIR)%.o: %.c
 	mkdir -p $(OBJDIR)
@@ -34,11 +37,13 @@ clean:
 	rm -rf $(OBJDIR)
 	make -C  $(LIBFT) clean
 	make -C  $(MINILIBX) clean
+	make -C $(FTPRINTF) clean
 
 fclean: clean
 	$(RM)	$(NAME)
 	make -C $(LIBFT) fclean
 	make -C $(MINILIBX) clean
+	make -C $(FTPRINTF) fclean
 
 re: fclean all
 
