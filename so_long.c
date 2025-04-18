@@ -1,6 +1,31 @@
 #include "include/so_long.h"
-#include <stdio.h>
 
+void free_all(s_list *vars)
+{
+    int i;
+    i = 0;
+    if(vars->splitmap)
+    {   
+        while(vars->splitmap[i] != NULL)
+        {
+            free(vars->splitmap[i]);
+            i++;
+        }
+        free(vars->splitmap);
+    }
+    if(vars->playerimg)
+        mlx_destroy_image(vars->mlx, vars->playerimg);
+    if(vars->wallimg)
+        mlx_destroy_image(vars->mlx, vars->wallimg);
+    if(vars->floorimg)
+        mlx_destroy_image(vars->mlx, vars->floorimg);
+    if(vars->mlx && vars->mlx_win)
+    {
+        mlx_destroy_window(vars->mlx, vars->mlx_win);
+        mlx_destroy_display(vars->mlx);
+        free(vars->mlx);
+    }
+}
 void    check_sizemap(s_list *vars)
 {
     int x;
@@ -102,16 +127,17 @@ void    init_vars(s_list *vars)
     vars->playery = 1;
     vars->playerx = 1;
     vars->coins = 0;
+    vars->steps = 0;
 }
 
 void player_move(s_list *vars, int x, int y)
 {
     if(vars->splitmap[vars->playery + y][vars->playerx + x] != '1')
     {
-        mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->wallimg, SIZE * vars->playerx, SIZE * vars->playery);
         vars->playerx += x;
         vars->playery += y;
-        mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, SIZE * vars->playerx, SIZE * vars->playery);
+        vars->steps++;
+        ft_printf("%d pasos.\n", vars->steps);
         if(vars->splitmap[vars->playery][vars->playerx] == 'c')
         {
             vars->coins -= 1;
@@ -126,8 +152,8 @@ void player_move(s_list *vars, int x, int y)
             }
             else
             {
-                mlx_destroy_window(vars->mlx, vars->mlx_win);
                 ft_printf("Lo tenemos, brutal\n");
+                free_all(vars);
                 exit(0);
             }
         }    
@@ -139,6 +165,7 @@ void player_move(s_list *vars, int x, int y)
 int closewin(s_list *vars)
 {
     mlx_destroy_window(vars->mlx, vars->mlx_win);
+    free_all(vars);
     exit(0);
 }
 

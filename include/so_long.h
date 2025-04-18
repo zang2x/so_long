@@ -2,6 +2,7 @@
 #include "libft.h"
 #include "mlx.h"
 #include <fcntl.h>
+#include <stdio.h>
 
 #ifndef SIZE
 #define SIZE 64
@@ -23,4 +24,5 @@ typedef struct t_list
     int playerx;
     int validmap;
     int coins;
+    int steps;
 } s_list;
