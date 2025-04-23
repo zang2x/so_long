@@ -5,28 +5,25 @@ void    check_mapwalls(s_list *vars)
     int x;
     int i;
     i = 0;
-    x = 0;
+    x = -1;
     while(vars->splitmap[i] != NULL)
         i++;
-    while(vars->splitmap[0][x] != '\0')
+    while(vars->splitmap[0][++x] != '\0')
     {
         if(vars->splitmap[0][x] != '1')
-            vars->validmap = 0;
-        x++;       
+            vars->validmap = 0;      
     }
-    x = 0;
-    while(vars->splitmap[x] != NULL)
+    x = -1;
+    while(vars->splitmap[++x] != NULL)
     {
         if(vars->splitmap[x][0] != '1' || vars->splitmap[x][ft_strlen(vars->splitmap[x]) - 1] != '1')
-            vars->validmap = 0;
-        x++;       
+            vars->validmap = 0;      
     }
-    x = 0;
-    while(vars->splitmap[x] || x < i)
+    x = -1;
+    while(vars->splitmap[++x] || x < i)
     {
         if(vars->splitmap[x][0] != '1' || vars->splitmap[x][ft_strlen(vars->splitmap[x]) - 1] != '1')
-            vars->validmap = 0;
-        x++;       
+            vars->validmap = 0;      
     }
 }
 
@@ -81,7 +78,6 @@ void    fill_map(s_list *vars)
         i++;
     }
     mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, SIZE * vars->playerx, SIZE * vars->playery);
-    mlx_string_put(vars->mlx, vars->mlx_win, 100, 100, 87, ft_itoa(vars->coins));
 }
 
 void    check_mapsize(s_list *vars)

@@ -30,9 +30,11 @@ void free_all(s_list *vars)
 void    init_vars(s_list *vars)
 {
     int fd;
+    int rbytes;
     char map[1024];
     fd = open("map1.ber", O_RDONLY);
-    read(fd, map, 1024);
+    rbytes = read(fd, map, 1024);
+    map[rbytes] = '\0';
     vars->splitmap = ft_split(map, '\n');
     vars->mlx = mlx_init();
     vars->mlx_win = mlx_new_window(vars->mlx, 840, 840, "PERROWS VIDIOGAME");
@@ -102,6 +104,7 @@ int key_hook(int keycode, s_list *vars)
 int main()
 {
     s_list vars;
+    ft_memset(&vars,0,sizeof(vars));
     init_vars(&vars);
     check_map(vars.playery, vars.playerx, &vars);
     ft_printf(", 7 El mapa es = %d", vars.validmap);
