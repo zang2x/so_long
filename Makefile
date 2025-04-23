@@ -1,4 +1,4 @@
-SRCS = so_long.c
+SRCS = so_long.c map_checks.c
 INCLUDE = include
 LIBFT = Libft
 MINILIBX = minilibx-linux
