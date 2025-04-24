@@ -25,6 +25,7 @@ void free_all(s_list *vars)
         mlx_destroy_display(vars->mlx);
         free(vars->mlx);
     }
+    exit(0);
 }
 
 void    init_vars(s_list *vars)
@@ -40,9 +41,11 @@ void    init_vars(s_list *vars)
     vars->mlx_win = mlx_new_window(vars->mlx, 840, 840, "PERROWS VIDIOGAME");
     vars->height = 64;
     vars->width = 64;
-    vars->playerimg = mlx_xpm_file_to_image(vars->mlx, "sprites/spriteplayer.xpm", &vars->width, &vars->height);
-    vars->floorimg = mlx_xpm_file_to_image(vars->mlx, "sprites/spritefloor.xpm", &vars->width, &vars->height);
-    vars->wallimg = mlx_xpm_file_to_image(vars->mlx, "sprites/wall.xpm", &vars->width, &vars->height);
+    vars->playerimg = mlx_xpm_file_to_image(vars->mlx, "textures/spriteplayer.xpm", &vars->width, &vars->height);
+    vars->floorimg = mlx_xpm_file_to_image(vars->mlx, "textures/spritefloor.xpm", &vars->width, &vars->height);
+    vars->wallimg = mlx_xpm_file_to_image(vars->mlx, "textures/wall.xpm", &vars->width, &vars->height);
+    vars->coinimg = mlx_xpm_file_to_image(vars->mlx, "textures/coin.xpm", &vars->width, &vars->height);
+    vars->doorimg = mlx_xpm_file_to_image(vars->mlx, "textures/door.xpm", &vars->width, &vars->height);
     vars->playery = 1;
     vars->playerx = 1;
     vars->coins = 0;
@@ -51,30 +54,25 @@ void    init_vars(s_list *vars)
 
 void player_move(s_list *vars, int x, int y)
 {
-    if(vars->splitmap[vars->playery + y][vars->playerx + x] != '1')
+    if(vars->splitmap[vars->playery + y][vars->playerx + x] == 'E' && vars->coins != 0)
+        ft_printf("There is %d bananas left, don't leave ⛔️\n", vars->coins);
+    if((vars->splitmap[vars->playery + y][vars->playerx + x] != '1' && vars->splitmap[vars->playery + y][vars->playerx + x] != 'E') || (vars->splitmap[vars->playery + y][vars->playerx + x] == 'E' && vars->coins == 0))
     {
         vars->playerx += x;
         vars->playery += y;
         vars->steps++;
-        ft_printf("%d pasos.\n", vars->steps);
+        ft_printf("%d steps.🦶\n", vars->steps);
         if(vars->splitmap[vars->playery][vars->playerx] == 'c')
         {
             vars->coins -= 1;
-            ft_printf("Faltan %d monedas wey\n", vars->coins);
+            ft_printf("There is %d bananas homie 🍌\n", vars->coins);
             vars->splitmap[vars->playery][vars->playerx] = '2';
         }
         if(vars->splitmap[vars->playery][vars->playerx] == 'E')
         {
-            if(vars->coins > 0)
-            {
-                ft_printf("Aun te faltan %d monedas, no te vayas\n", vars->coins);
-            }
-            else
-            {
-                ft_printf("Lo tenemos en %d pasos, brutal\n", vars->steps);
-                free_all(vars);
-                exit(0);
-            }
+
+            ft_printf("We got it in %d steps, brutal 🏆\n", vars->steps);
+            free_all(vars);
         }    
     }
     mlx_clear_window(vars->mlx, vars->mlx_win);
@@ -83,9 +81,8 @@ void player_move(s_list *vars, int x, int y)
 
 int closewin(s_list *vars)
 {
-    mlx_destroy_window(vars->mlx, vars->mlx_win);
     free_all(vars);
-    exit(0);
+    return(0);
 }
 
 int key_hook(int keycode, s_list *vars)

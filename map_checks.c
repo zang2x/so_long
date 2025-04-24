@@ -70,9 +70,11 @@ void    fill_map(s_list *vars)
             if(vars->splitmap[i][j] == '2')
                 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->wallimg, SIZE * j, SIZE * i);
             if(vars->splitmap[i][j] == 'c')
-                mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->floorimg, SIZE * j, SIZE * i);
+                mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->coinimg, SIZE * j, SIZE * i);
             if(vars->splitmap[i][j] == 'P')
                 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->wallimg, SIZE * j, SIZE * i);
+            if(vars->splitmap[i][j] == 'E')
+                mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->doorimg, SIZE * j, SIZE * i);
             j++;
         }
         i++;

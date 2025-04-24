@@ -16,6 +16,8 @@ typedef struct t_list
     void *playerimg;
     void *floorimg;
     void *wallimg;
+    void *coinimg;
+    void *doorimg;
     int height;
     int width;
     int playery;
@@ -29,7 +31,7 @@ void  fill_map(s_list *vars);
 void  check_map(int playery, int playerx, s_list *vars);
 void  check_mapwalls(s_list *vars);
 void  free_all(s_list *vars);
-void    init_vars(s_list *vars);
+void  init_vars(s_list *vars);
 void player_move(s_list *vars, int x, int y);
 int closewin(s_list *vars);
 int key_hook(int keycode, s_list *vars);
