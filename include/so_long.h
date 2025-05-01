@@ -36,3 +36,4 @@ void player_move(s_list *vars, int x, int y);
 int closewin(s_list *vars);
 int key_hook(int keycode, s_list *vars);
 void    check_mapsize(s_list *vars);
+void    check_weirdthings(s_list *vars);

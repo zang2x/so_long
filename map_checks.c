@@ -1,5 +1,55 @@
 #include "include/so_long.h"
+void    check_map(int playery, int playerx, s_list *vars)
+{
+    if(playery < 0 || playerx < 0 || vars->splitmap[playery] == NULL || vars->splitmap[playery][playerx] == '\0')
+        return;
+    if(vars->splitmap[playery][playerx] == 'E')
+    {
+        vars->validmap = 0;
+        return;
+    }
+    if(vars->splitmap[playery][playerx] == 'C')
+    {
+        vars->splitmap[playery][playerx] = 'c';   
+        vars->coins++;
+    }
+    if(vars->splitmap[playery][playerx] == '1' || vars->splitmap[playery][playerx] == '2')
+        return;
+    if(vars->splitmap[playery][playerx] == 'P')
+    {
+        vars->playery = playery;
+        vars->playerx = playerx;
+    }
+    if(vars->splitmap[playery][playerx] != 'c' && vars->splitmap[playery][playerx] != 'P')
+        vars->splitmap[playery][playerx] = '2';
+    check_map(playery + 1, playerx, vars);
+    check_map(playery, playerx + 1, vars);
+    check_map(playery, playerx - 1, vars);
+    check_map(playery - 1, playerx, vars);
+    ft_printf("validmapas = %s\n", vars->splitmap[1]);
+}
+void    check_weirdthings(s_list *vars)
+{
+    int j;
+    int i;
 
+    i = 0;
+    j = 0;
+    while(vars->splitmap[i] != NULL && vars->validmap != 1)
+    {
+        j = 0;     
+        while(vars->splitmap[i][j])
+        {
+            if(vars->splitmap[i][j] != '1' && vars->splitmap[i][j] != '2' && vars->splitmap[i][j] != 'c' && vars->splitmap[i][j] != 'P' && vars->splitmap[i][j] != 'E' && vars->splitmap[i][j] != 'C' && vars->splitmap[i][j] != '0')
+            {
+                ft_printf("posicion actual = %c\n", vars->splitmap[i][j]);
+                vars->validmap = 1;
+            }
+            j++;
+        }
+        i++;
+    }
+}
 void    check_mapwalls(s_list *vars)
 {
     int x;
@@ -27,35 +77,6 @@ void    check_mapwalls(s_list *vars)
     }
 }
 
-void    check_map(int playery, int playerx, s_list *vars)
-{
-    if(playery < 0 || playerx < 0 || vars->splitmap[playery] == NULL || vars->splitmap[playery][playerx] == '\0')
-        return;
-    if(vars->splitmap[playery][playerx] == 'E')
-    {
-        vars->validmap = 0;
-        return;
-    }
-    if(vars->splitmap[playery][playerx] == 'C')
-    {
-        vars->splitmap[playery][playerx] = 'c';   
-        vars->coins++;
-    }
-    if(vars->splitmap[playery][playerx] == '1' || vars->splitmap[playery][playerx] == '2' )
-        return;
-    if(vars->splitmap[playery][playerx] == 'P')
-    {
-        vars->playery = playery;
-        vars->playerx = playerx;
-    }
-    if(vars->splitmap[playery][playerx] != 'c' && vars->splitmap[playery][playerx] != 'P')
-        vars->splitmap[playery][playerx] = '2';
-    check_map(playery + 1, playerx, vars);
-    check_map(playery, playerx + 1, vars);
-    check_map(playery, playerx - 1, vars);
-    check_map(playery - 1, playerx, vars);
-}
-
 void    fill_map(s_list *vars)
 {
     int i = 0;
@@ -65,6 +86,8 @@ void    fill_map(s_list *vars)
         j = 0;     
         while(vars->splitmap[i][j])
         {
+            if(vars->splitmap[i][j] == 'C')
+                vars->validmap = 1;
             if(vars->splitmap[i][j] == '1')
                 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->floorimg, SIZE * j, SIZE * i);
             if(vars->splitmap[i][j] == '2')

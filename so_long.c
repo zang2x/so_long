@@ -38,6 +38,16 @@ void    init_vars(s_list *vars)
     map[rbytes] = '\0';
     vars->splitmap = ft_split(map, '\n');
     vars->mlx = mlx_init();
+    vars->playery = 1;
+    vars->playerx = 1;
+    vars->coins = 0;
+    vars->steps = 0;
+    check_weirdthings(vars);
+    ft_printf("validmap = %d\n", vars->validmap);
+    if(vars->validmap == 1)
+        free_all(vars);
+    check_map(vars->playery, vars->playerx, vars);
+    ft_printf("coins = %d\n", vars->coins);
     vars->mlx_win = mlx_new_window(vars->mlx, 840, 840, "PERROWS VIDIOGAME");
     vars->height = 64;
     vars->width = 64;
@@ -46,10 +56,6 @@ void    init_vars(s_list *vars)
     vars->wallimg = mlx_xpm_file_to_image(vars->mlx, "textures/wall.xpm", &vars->width, &vars->height);
     vars->coinimg = mlx_xpm_file_to_image(vars->mlx, "textures/coin.xpm", &vars->width, &vars->height);
     vars->doorimg = mlx_xpm_file_to_image(vars->mlx, "textures/door.xpm", &vars->width, &vars->height);
-    vars->playery = 1;
-    vars->playerx = 1;
-    vars->coins = 0;
-    vars->steps = 0;
 }
 
 void player_move(s_list *vars, int x, int y)
@@ -103,13 +109,10 @@ int main()
     s_list vars;
     ft_memset(&vars,0,sizeof(vars));
     init_vars(&vars);
-    check_map(vars.playery, vars.playerx, &vars);
-    ft_printf(", 7 El mapa es = %d", vars.validmap);
     check_mapwalls(&vars);
-    ft_printf(", 8 El walls es = %d", vars.validmap);
     check_mapsize(&vars);
-    ft_printf(",El mapsize es = %d,", vars.validmap);
     fill_map(&vars);
+    ft_printf("validmapa = %d\n", vars.validmap);
     mlx_key_hook(vars.mlx_win, key_hook, &vars);
     mlx_hook(vars.mlx_win, 17, 0, closewin, &vars);
     mlx_loop(vars.mlx);
