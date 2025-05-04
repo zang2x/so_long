@@ -25,6 +25,12 @@ typedef struct t_list
     int validmap;
     int coins;
     int steps;
+    int mapsizex;
+    int mapsizey;
+    int exitable;
+    int reachablecoin;
+    int player;
+    int door;
 } s_list;
 
 void  fill_map(s_list *vars);
@@ -37,3 +43,5 @@ int closewin(s_list *vars);
 int key_hook(int keycode, s_list *vars);
 void    check_mapsize(s_list *vars);
 void    check_weirdthings(s_list *vars);
+void validchecker(s_list *vars);
+void    destroyimages(s_list *vars);

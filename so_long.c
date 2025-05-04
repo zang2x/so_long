@@ -1,9 +1,23 @@
 #include "include/so_long.h"
-
+void    destroyimages(s_list *vars)
+{
+    if(vars->wallimg)
+        mlx_destroy_image(vars->mlx, vars->wallimg);
+    if(vars->doorimg)
+        mlx_destroy_image(vars->mlx, vars->doorimg);
+    if(vars->floorimg)
+        mlx_destroy_image(vars->mlx, vars->floorimg);
+    if(vars->playerimg)
+        mlx_destroy_image(vars->mlx, vars->playerimg);
+    if(vars->coinimg)
+        mlx_destroy_image(vars->mlx, vars->coinimg);
+}
 void free_all(s_list *vars)
 {
     int i;
     i = 0;
+    if(vars->validmap != 0 || vars->exitable > 1)
+        ft_printf("Error");
     if(vars->splitmap)
     {   
         while(vars->splitmap[i] != NULL)
@@ -13,12 +27,7 @@ void free_all(s_list *vars)
         }
         free(vars->splitmap);
     }
-    if(vars->playerimg)
-        mlx_destroy_image(vars->mlx, vars->playerimg);
-    if(vars->wallimg)
-        mlx_destroy_image(vars->mlx, vars->wallimg);
-    if(vars->floorimg)
-        mlx_destroy_image(vars->mlx, vars->floorimg);
+    destroyimages(vars);
     if(vars->mlx && vars->mlx_win)
     {
         mlx_destroy_window(vars->mlx, vars->mlx_win);
@@ -37,18 +46,14 @@ void    init_vars(s_list *vars)
     rbytes = read(fd, map, 1024);
     map[rbytes] = '\0';
     vars->splitmap = ft_split(map, '\n');
+    close(fd);
     vars->mlx = mlx_init();
-    vars->playery = 1;
-    vars->playerx = 1;
-    vars->coins = 0;
-    vars->steps = 0;
     check_weirdthings(vars);
-    ft_printf("validmap = %d\n", vars->validmap);
-    if(vars->validmap == 1)
-        free_all(vars);
-    check_map(vars->playery, vars->playerx, vars);
-    ft_printf("coins = %d\n", vars->coins);
-    vars->mlx_win = mlx_new_window(vars->mlx, 840, 840, "PERROWS VIDIOGAME");
+    check_map(vars->playerx, vars->playery, vars);
+    if(vars->reachablecoin != vars->coins || vars->exitable != 1 || vars->door != 1)
+        vars->validmap = 1;
+    validchecker(vars);
+    vars->mlx_win = mlx_new_window(vars->mlx, vars->mapsizex * SIZE, vars->mapsizey * SIZE, "PERROWS VIDIOGAME");
     vars->height = 64;
     vars->width = 64;
     vars->playerimg = mlx_xpm_file_to_image(vars->mlx, "textures/spriteplayer.xpm", &vars->width, &vars->height);
@@ -60,9 +65,9 @@ void    init_vars(s_list *vars)
 
 void player_move(s_list *vars, int x, int y)
 {
-    if(vars->splitmap[vars->playery + y][vars->playerx + x] == 'E' && vars->coins != 0)
-        ft_printf("There is %d bananas left, don't leave ⛔️\n", vars->coins);
-    if((vars->splitmap[vars->playery + y][vars->playerx + x] != '1' && vars->splitmap[vars->playery + y][vars->playerx + x] != 'E') || (vars->splitmap[vars->playery + y][vars->playerx + x] == 'E' && vars->coins == 0))
+    if(vars->splitmap[vars->playery + y][vars->playerx + x] == 'e' && vars->reachablecoin != 0)
+        ft_printf("There is %d bananas left, don't leave ⛔️\n", vars->reachablecoin);
+    if((vars->splitmap[vars->playery + y][vars->playerx + x] != '3' && vars->splitmap[vars->playery + y][vars->playerx + x] != 'e') || (vars->splitmap[vars->playery + y][vars->playerx + x] == 'e' && vars->reachablecoin == 0))
     {
         vars->playerx += x;
         vars->playery += y;
@@ -70,11 +75,11 @@ void player_move(s_list *vars, int x, int y)
         ft_printf("%d steps.🦶\n", vars->steps);
         if(vars->splitmap[vars->playery][vars->playerx] == 'c')
         {
-            vars->coins -= 1;
-            ft_printf("There is %d bananas homie 🍌\n", vars->coins);
+            vars->reachablecoin -= 1;
+            ft_printf("There is %d bananas homie 🍌\n", vars->reachablecoin);
             vars->splitmap[vars->playery][vars->playerx] = '2';
         }
-        if(vars->splitmap[vars->playery][vars->playerx] == 'E')
+        if(vars->splitmap[vars->playery][vars->playerx] == 'e')
         {
 
             ft_printf("We got it in %d steps, brutal 🏆\n", vars->steps);
@@ -101,6 +106,8 @@ int key_hook(int keycode, s_list *vars)
         player_move(vars, 0, 1);
     if(keycode == 119) // W
         player_move(vars, 0, -1);
+    if(keycode == 65307)
+        closewin(vars);
     return(0);
 }
 
@@ -112,7 +119,6 @@ int main()
     check_mapwalls(&vars);
     check_mapsize(&vars);
     fill_map(&vars);
-    ft_printf("validmapa = %d\n", vars.validmap);
     mlx_key_hook(vars.mlx_win, key_hook, &vars);
     mlx_hook(vars.mlx_win, 17, 0, closewin, &vars);
     mlx_loop(vars.mlx);
