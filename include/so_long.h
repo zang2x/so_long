@@ -49,3 +49,4 @@ void    destroyimages(s_list *vars);
 void    check_position(int playery, int playerx, s_list *vars);
 void    check_extrathings(int i, int j, s_list *vars);
 void    init_imgs(s_list *vars);
+void    put_image(void *img, int y, int j, s_list *vars)
