@@ -31,12 +31,13 @@ typedef struct t_list
     int reachablecoin;
     int player;
     int door;
+    char *map;
 } s_list;
 
 void  fill_map(s_list *vars);
 void  check_map(int playery, int playerx, s_list *vars);
 void  check_mapwalls(s_list *vars);
-void  free_all(s_list *vars);
+int  free_all(s_list *vars);
 void  init_vars(s_list *vars);
 void player_move(s_list *vars, int x, int y);
 int closewin(s_list *vars);
@@ -45,3 +46,6 @@ void    check_mapsize(s_list *vars);
 void    check_weirdthings(s_list *vars);
 void validchecker(s_list *vars);
 void    destroyimages(s_list *vars);
+void    check_position(int playery, int playerx, s_list *vars);
+void    check_extrathings(int i, int j, s_list *vars);
+void    init_imgs(s_list *vars);
