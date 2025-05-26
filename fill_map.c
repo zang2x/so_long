@@ -9,7 +9,6 @@ void	fill_map(s_list *vars)
 {
 	int	i;
 	int	j;
-	char c;
 
 	i = 0;
 	while (vars->splitmap[i] != NULL)

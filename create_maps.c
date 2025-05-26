@@ -34,40 +34,6 @@ void	init_imgs(s_list *vars)
 			&vars->width, &vars->height);
 }
 
-void	fill_map(s_list *vars)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (vars->splitmap[i] != NULL)
-	{
-		j = 0;
-		while (vars->splitmap[i][j])
-		{
-			if (vars->splitmap[i][j] == 'C')
-				vars->validmap = 1;
-			if (vars->splitmap[i][j] == '3' || vars->splitmap[i][j] == '1')
-				mlx_put_image_to_window(vars->mlx, vars->mlx_win,
-					vars->floorimg, SIZE * j, SIZE * i);
-			if (vars->splitmap[i][j] == '2' || vars->splitmap[i][j] == '0'
-				|| vars->splitmap[i][j] == 'P')
-				mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->wallimg,
-					SIZE * j, SIZE * i);
-			if (vars->splitmap[i][j] == 'c' || vars->splitmap[i][j] == 'C')
-				mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->coinimg,
-					SIZE * j, SIZE * i);
-			if (vars->splitmap[i][j] == 'e')
-				mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->doorimg,
-					SIZE * j, SIZE * i);
-			j++;
-		}
-		i++;
-	}
-	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->playerimg, SIZE
-		* vars->playerx, SIZE * vars->playery);
-}
-
 void	check_mapsize(s_list *vars)
 {
 	int	x;
