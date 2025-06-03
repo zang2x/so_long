@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_checks.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obmedina <obmedina@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/27 11:30:17 by obmedina          #+#    #+#             */
+/*   Updated: 2025/06/03 17:00:51 by obmedina         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "include/so_long.h"
 
-void	check_map(int playery, int playerx, s_list *vars)
+void	check_map(int playery, int playerx, t_list *vars)
 {
 	if (playery < 0 || playerx < 0 || playerx >= vars->mapsizex
 		|| playery >= vars->mapsizey)
@@ -18,10 +30,10 @@ void	check_map(int playery, int playerx, s_list *vars)
 	}
 	if (vars->splitmap[playery][playerx] == 'E')
 		check_position(playery, playerx, vars);
-	if (vars->splitmap[playery][playerx] != 'c'
-		&& vars->splitmap[playery][playerx] != 'P'
+	if ((vars->splitmap[playery][playerx] != 'P'
 		&& vars->splitmap[playery][playerx] != '3'
 		&& vars->splitmap[playery][playerx] != 'e')
+		&& vars->splitmap[playery][playerx] != 'c')
 		vars->splitmap[playery][playerx] = '2';
 	check_map(playery + 1, playerx, vars);
 	check_map(playery, playerx + 1, vars);
@@ -29,7 +41,7 @@ void	check_map(int playery, int playerx, s_list *vars)
 	check_map(playery - 1, playerx, vars);
 }
 
-void	check_position(int playery, int playerx, s_list *vars)
+void	check_position(int playery, int playerx, t_list *vars)
 {
 	if (vars->splitmap[playery][playerx] == 'C')
 	{
@@ -49,7 +61,7 @@ void	check_position(int playery, int playerx, s_list *vars)
 	}
 }
 
-void	check_weirdthings(s_list *vars)
+void	check_weirdthings(t_list *vars)
 {
 	int		j;
 	int		i;
@@ -77,7 +89,8 @@ void	check_weirdthings(s_list *vars)
 	check_mapsize(vars);
 	validchecker(vars);
 }
-void	check_extrathings(int i, int j, s_list *vars)
+
+void	check_extrathings(int i, int j, t_list *vars)
 {
 	if (vars->splitmap[i][j] == 'P')
 	{
@@ -94,25 +107,28 @@ void	check_extrathings(int i, int j, s_list *vars)
 			&& vars->splitmap[i][j] != '0') || vars->player > 1)
 		vars->validmap = 1;
 }
-void	check_mapwalls(s_list *vars)
+
+void	check_mapwalls(t_list *vars)
 {
 	int	x;
 	int	i;
 
 	i = 0;
-	x = -1;
+	x = 0;
 	while (vars->splitmap[i] != NULL)
 		i++;
-	while (vars->splitmap[0][++x] != '\0')
+	while (vars->splitmap[0][x] != '\0')
 	{
 		if (vars->splitmap[0][x] != '1')
-			vars->validmap = 0;
+			vars->validmap = 1;
+		x++;
 	}
-	x = -1;
-	while (vars->splitmap[++x] != NULL || (vars->splitmap[x] || x < i))
+	x = 0;
+	while (vars->splitmap[x] != NULL || (vars->splitmap[x] || x < i))
 	{
 		if (vars->splitmap[x][0] != '1'
 			|| vars->splitmap[x][ft_strlen(vars->splitmap[x]) - 1] != '1')
-			vars->validmap = 0;
+			vars->validmap = 1;
+		x++;
 	}
 }

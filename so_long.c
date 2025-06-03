@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obmedina <obmedina@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/27 11:30:22 by obmedina          #+#    #+#             */
+/*   Updated: 2025/06/03 17:00:15 by obmedina         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "include/so_long.h"
 
-int	free_all(s_list *vars)
+int	free_all(t_list *vars)
 {
 	int	i;
 
@@ -26,7 +38,7 @@ int	free_all(s_list *vars)
 	exit(0);
 }
 
-void	init_vars(s_list *vars)
+void	init_vars(t_list *vars)
 {
 	int		fd;
 	int		rbytes;
@@ -40,10 +52,10 @@ void	init_vars(s_list *vars)
 	map[rbytes] = '\0';
 	vars->splitmap = ft_split(map, '\n');
 	close(fd);
+	check_mapwalls(vars);
 	vars->mlx = mlx_init();
 	check_weirdthings(vars);
 	check_map(vars->playerx, vars->playery, vars);
-        ft_printf("%d and %d", vars->reachablecoin, vars->coins);
 	if (vars->reachablecoin != vars->coins || vars->exitable != 1
 		|| vars->door != 1)
 		vars->validmap = 1;
@@ -55,7 +67,7 @@ void	init_vars(s_list *vars)
 	init_imgs(vars);
 }
 
-void	player_move(s_list *vars, int x, int y)
+void	player_move(t_list *vars, int x, int y)
 {
 	if (vars->splitmap[vars->playery + y][vars->playerx + x] == 'e'
 		&& vars->reachablecoin != 0)
@@ -84,7 +96,7 @@ void	player_move(s_list *vars, int x, int y)
 	fill_map(vars);
 }
 
-int	key_hook(int keycode, s_list *vars)
+int	key_hook(int keycode, t_list *vars)
 {
 	if (keycode == 100)
 		player_move(vars, 1, 0);
@@ -101,7 +113,7 @@ int	key_hook(int keycode, s_list *vars)
 
 int	main(int argc, char *argv[])
 {
-	s_list	vars;
+	t_list	vars;
 
 	if (argc != 2)
 	{
@@ -111,10 +123,10 @@ int	main(int argc, char *argv[])
 	ft_memset(&vars, 0, sizeof(vars));
 	vars.map = argv[1];
 	init_vars(&vars);
-	check_mapwalls(&vars);
-	check_mapsize(&vars);
 	fill_map(&vars);
 	mlx_key_hook(vars.mlx_win, key_hook, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, free_all, &vars);
+	ft_printf("%d", vars.coins);
+	ft_printf("%d", vars.reachablecoin);
 	mlx_loop(vars.mlx);
 }
